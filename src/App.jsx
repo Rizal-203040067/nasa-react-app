@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Footer from "./components/footer";
-import Main from "./components/main";
+import Footer from "./components/Footer";
+import Main from "./components/Main";
 import Sidebar from "./components/SideBar";
 
 function App() {
   const [data, setData] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   function handleToggleModal() {
     setShowModal(!showModal);
