@@ -15,11 +15,16 @@ function App() {
   useEffect(() => {
     async function fetchAPIData() {
       const NASA_KEY = import.meta.env.VITE_NASA_API_KEY;
-      const url =
-        "https://api.nasa.gov/planetary/apod" + "?api_key=${NASA_KEY}";
+      if (!NASA_KEY) {
+        console.error("NASA API key is missing!");
+        return;
+      }
+
+      const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}`; // ✅ Perbaiki template string
 
       const today = new Date().toDateString();
-      const localKey = "NASA-${today}";
+      const localKey = `NASA-${today}`; // ✅ Perbaiki template string
+
       if (localStorage.getItem(localKey)) {
         const apiData = JSON.parse(localStorage.getItem(localKey));
         setData(apiData);
@@ -28,19 +33,21 @@ function App() {
       }
       localStorage.clear();
 
-      // use async to load the data first
-      // while the data is fethced then play loadingstate
-      // if it's ready load the data
       try {
+        setLoading(true);
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`API Error: ${res.status}`);
         const apiData = await res.json();
         localStorage.setItem(localKey, JSON.stringify(apiData));
         setData(apiData);
         console.log("Fetched from API today");
       } catch (err) {
-        console.log(err.message);
+        console.error("Error fetching API:", err.message);
+      } finally {
+        setLoading(false);
       }
     }
+
     fetchAPIData();
   }, []);
 
